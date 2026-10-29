@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynTree OS // Cyber LL(1) Workbench</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="cyber-theme">
+
+    <!-- SECTION 1: ANIME CYBER INTRO HERO -->
+    <section id="introSection" class="intro-hero">
+        <div class="cyber-grid"></div>
+        <div class="intro-content">
+            <div class="hud-frame">
+                <div class="cyber-logo-wrapper" onclick="scrollToWorkbench()">
+                    <div class="ring outer-ring"></div>
+                    <div class="ring middle-ring"></div>
+                    <div class="ring core-ring">
+                        <svg viewBox="0 0 100 100" class="neon-tree-svg">
+              <polygon points="50,15 85,80 15,80" class="holo-triangle" />
+              <circle cx="50" cy="25" r="7" class="holo-node main" />
+              <circle cx="30" cy="70" r="6" class="holo-node" />
+              <circle cx="70" cy="70" r="6" class="holo-node" />
+              <line x1="50" y1="25" x2="30" y2="70" class="holo-laser" />
+              <line x1="50" y1="25" x2="70" y2="70" class="holo-laser" />
+            </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="glitch-title-box">
+                <h1 class="cyber-glitch">SYNTREE OS</h1>
+                <p class="cyber-subtitle">NEURAL SYNTAX ANALYSIS & QUANTUM PARSE TREE GENERATOR</p>
+            </div>
+            <button class="cyber-start-btn" onclick="scrollToWorkbench()">
+        <span class="btn-scanline"></span>
+        <span class="btn-text">INITIALIZE SYSTEM ↓</span>
+        <span class="btn-corner tl"></span><span class="btn-corner tr"></span>
+        <span class="btn-corner bl"></span><span class="btn-corner br"></span>
+      </button>
+            <div class="cyber-tip">CLICK LOGO OR BUTTON TO ENTER WORKBENCH</div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: GOOGLE-STYLE MINIMALIST WORKBENCH -->
+    <main id="workbench" class="main-container">
+        <!-- TOP NAVIGATION -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <span class="nav-brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⚡ SynTree // Core</span>
+                <span class="system-status"><span class="dot live"></span>ONLINE</span>
+            </div>
+            <div class="nav-right">
+                <button class="waffle-btn" onclick="toggleWaffle()" title="Presets Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <circle cx="5" cy="5" r="2.5"/><circle cx="12" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/>
+            <circle cx="5" cy="12" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/>
+            <circle cx="5" cy="19" r="2.5"/><circle cx="12" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/>
+          </svg>
+        </button>
+                <div id="waffleMenu" class="waffle-drawer hidden">
+                    <div class="drawer-header">Grammar Presets</div>
+                    <div class="drawer-grid">
+                        <div class="app-chip" onclick="switchPreset('arithmetic')"><span>📐</span>Arithmetic</div>
+                        <div class="app-chip" onclick="switchPreset('boolean')"><span>⚡</span>Boolean</div>
+                        <div class="app-chip" onclick="switchPreset('ifelse')"><span>🔀</span>If-Else</div>
+                        <div class="app-chip" onclick="switchPreset('block')"><span>📦</span>Block Stmt</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CENTERED SEARCH & PARSE BAR -->
+        <section class="search-hero">
+            <div class="minimal-brand">
+                <span class="brand-letter g-blue">S</span>
+                <span class="brand-letter g-red">y</span>
+                <span class="brand-letter g-yellow">n</span>
+                <span class="brand-letter g-blue">T</span>
+                <span class="brand-letter g-green">r</span>
+                <span class="brand-letter g-red">e</span>
+                <span class="brand-letter g-yellow">e</span>
+            </div>
+            <p class="search-tagline">Deterministic LL(1) Parsing Engine & Real-Time Tree Synthesis</p>
+
+            <!-- Pill Shaped Search Bar -->
+            <div class="search-pill-wrapper">
+                <div class="search-icon">🔍</div>
+                <input type="text" id="stringInput" class="search-input" placeholder="Type token stream (e.g. id + id * id)..." value="id + id * id">
+                <button class="search-lens-btn" onclick="executeAnalysis()" title="Parse Input">▶</button>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="pill-actions">
+                <button class="pill-btn primary" onclick="executeAnalysis()">Generate Parse Tree</button>
+                <button class="pill-btn secondary" onclick="feelingLucky()">I'm Feeling Lucky</button>
+            </div>
+
+            <!-- Quick Test Chips -->
+            <div class="test-chips-row">
+                <span class="chip-label">Quick Test Strings:</span>
+                <button class="chip-btn" onclick="setTestString('id + id')">id + id</button>
+                <button class="chip-btn" onclick="setTestString('id + id * id')">id + id * id</button>
+                <button class="chip-btn" onclick="setTestString('( id + id ) * id')">( id + id ) * id</button>
+                <button class="chip-btn error-chip" onclick="setTestString('id + * id')">id + * id (Error test)</button>
+            </div>
+        </section>
+
+        <!-- WORKBENCH BODY -->
+        <section class="workbench-body">
+            <div class="control-row">
+                <div class="card spec-card">
+                    <div class="card-title-bar">
+                        <span>Context-Free Grammar (CFG)</span>
+                        <div class="preset-controls">
+                            <label for="grammarSelect">Preset:</label>
+                            <select id="grammarSelect" onchange="applyPresetSelection()">
+                <option value="arithmetic">1. Arithmetic Expressions</option>
+                <option value="boolean">2. Boolean Expressions</option>
+                <option value="ifelse">3. If-Else Control Flow</option>
+                <option value="block">4. Block Structure</option>
+              </select>
+                        </div>
+                    </div>
+                    <p class="syntax-info">Format: <code>A -> B C | epsilon</code> (Symbols separated by spaces):</p>
+                    <textarea id="grammarInput" rows="7" spellcheck="false"></textarea>
+                </div>
+
+                <div class="card status-panel">
+                    <div class="card-title-bar"><span>Engine Diagnostics</span></div>
+                    <div id="statusIndicator" class="status-box waiting">Awaiting Grammar Execution</div>
+                    <div class="quick-stats-box">
+                        <div><span class="stat-name">Grammar LL(1) Status:</span> <span id="statLL1" class="stat-val">—</span></div>
+                        <div><span class="stat-name">Total Non-Terminals:</span> <span id="statNT" class="stat-val">0</span></div>
+                        <div><span class="stat-name">Total Terminals:</span> <span id="statT" class="stat-val">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTS & OUTPUT PANELS -->
+            <div id="resultsZone" class="results-zone">
+                <!-- FIRST & FOLLOW -->
+                <div class="card">
+                    <div class="card-title-bar"><span>Mathematical FIRST & FOLLOW Sets</span></div>
+                    <div id="firstFollowDeck" class="set-deck">
+                        <p style="color: #64748b; font-size: 0.85rem;">Click "Generate Parse Tree" above to view sets.</p>
+                    </div>
+                </div>
+
+                <!-- LL(1) MATRIX -->
+                <div class="card">
+                    <div class="card-title-bar"><span>LL(1) Predictive Parsing Table</span></div>
+                    <div class="table-scroll">
+                        <table id="parsingTable">
+                            <tbody>
+                                <tr>
+                                    <td style="color: #64748b;">Table entries will appear here after analysis.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GRAPHICAL PARSE TREE -->
+                <div class="card tree-viewport">
+                    <div class="card-title-bar">
+                        <span>Synthesized Parse Tree Visualization</span>
+                        <div class="canvas-actions">
+                            <button class="pill-btn mini" onclick="zoomCanvas(1.1)">Zoom +</button>
+                            <button class="pill-btn mini" onclick="zoomCanvas(0.9)">Zoom -</button>
+                            <button class="pill-btn mini" onclick="resetCanvas()">Reset</button>
+                        </div>
+                    </div>
+                    <div class="canvas-wrap">
+                        <canvas id="treeCanvas" width="1000" height="480"></canvas>
+                    </div>
+                </div>
+
+                <!-- PUSHDOWN STACK TRACE -->
+                <div class="card">
+                    <div class="card-title-bar"><span>Predictive Parsing Stack Trace</span></div>
+                    <div class="table-scroll">
+                        <table id="traceTable">
+                            <thead>
+                                <tr>
+                                    <th>Step</th>
+                                    <th>Pushdown Stack</th>
+                                    <th>Input Stream</th>
+                                    <th>Parser Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4" style="color: #64748b; text-align: center;">Trace steps will display upon parsing.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const GRAMMAR_PRESETS = {
+            arithmetic: {
+                grammar: "E -> T E'\nE' -> + T E' | epsilon\nT -> F T'\nT' -> * F T' | epsilon\nF -> ( E ) | id",
+                sampleInput: "id + id * id"
+            },
+            boolean: {
+                grammar: "B -> T B'\nB' -> or T B' | epsilon\nT -> F T'\nT' -> and F T' | epsilon\nF -> not F | true | false",
+                sampleInput: "true and not false"
+            },
+            ifelse: {
+                grammar: "S -> if C then S S' | stmt\nS' -> else S | epsilon\nC -> cond",
+                sampleInput: "if cond then stmt else stmt"
+            },
+            block: {
+                grammar: "P -> begin S end\nS -> id = id ; S | epsilon",
+                sampleInput: "begin id = id ; end"
+            }
+        };
+
+        let currentScale = 1.0;
+        let cachedTreeData = null;
+
+        function scrollToWorkbench() {
+            const wb = document.getElementById('workbench');
+            if (wb) {
+                wb.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function toggleWaffle() {
+            const menu = document.getElementById('waffleMenu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        function applyPresetSelection() {
+            const select = document.getElementById('grammarSelect');
+            if (select) switchPreset(select.value);
+        }
+
+        function switchPreset(key) {
+            const data = GRAMMAR_PRESETS[key];
+            if (!data) return;
+            document.getElementById('grammarSelect').value = key;
+            document.getElementById('grammarInput').value = data.grammar;
+            document.getElementById('stringInput').value = data.sampleInput;
+            const waffle = document.getElementById('waffleMenu');
+            if (waffle) waffle.classList.add('hidden');
+        }
+
+        function setTestString(str) {
+            document.getElementById('stringInput').value = str;
+            executeAnalysis();
+        }
+
+        function feelingLucky() {
+            const keys = Object.keys(GRAMMAR_PRESETS);
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            switchPreset(randomKey);
+            executeAnalysis();
+        }
+
+        async function executeAnalysis() {
+            const grammar = document.getElementById('grammarInput').value;
+            const inputStr = document.getElementById('stringInput').value;
+            const statusBox = document.getElementById('statusIndicator');
+
+            statusBox.className = 'status-box waiting';
+            statusBox.innerText = 'Transpiling Grammar & Verifying LL(1) Matrix...';
+
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        grammar: grammar,
+                        input: inputStr
+                    })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    statusBox.className = 'status-box error';
+                    statusBox.innerText = data.error || 'Grammar validation error.';
+                    return;
+                }
+
+                document.getElementById('statNT').innerText = data.non_terminals.length;
+                document.getElementById('statT').innerText = data.terminals.length;
+                document.getElementById('statLL1').innerText = data.is_ll1 ? 'YES (Valid)' : 'NO (Conflict)';
+                document.getElementById('statLL1').style.color = data.is_ll1 ? 'var(--neon-green)' : 'var(--neon-pink)';
+
+                if (data.parse_result && data.parse_result.accepted) {
+                    statusBox.className = 'status-box success';
+                    statusBox.innerText = `String '${inputStr}' Accepted! Parse Tree Generated.`;
+                } else if (data.parse_result) {
+                    statusBox.className = 'status-box error';
+                    statusBox.innerText = data.parse_result.error || `String '${inputStr}' Rejected.`;
+                }
+
+                renderFirstFollow(data.first, data.follow);
+                renderTable(data.non_terminals, data.terminals, data.table);
+
+                if (data.parse_result) {
+                    renderTrace(data.parse_result.steps);
+                    if (data.parse_result.tree) {
+                        cachedTreeData = data.parse_result.tree;
+                        drawParseTree(cachedTreeData, currentScale);
+                    } else {
+                        clearCanvas();
+                    }
+                }
+            } catch (err) {
+                statusBox.className = 'status-box error';
+                statusBox.innerText = 'Runtime execution failure: ' + err.message;
+            }
+        }
+
+        function renderFirstFollow(first, follow) {
+            const deck = document.getElementById('firstFollowDeck');
+            deck.innerHTML = '';
+            for (const nt of Object.keys(first)) {
+                const card = document.createElement('div');
+                card.className = 'set-card';
+                card.innerHTML = `<strong>${nt}</strong><br>FIRST = { ${first[nt].join(', ')} }<br>FOLLOW = { ${follow[nt].join(', ')} }`;
+                deck.appendChild(card);
+            }
+        }
+
+        function renderTable(nts, terminals, table) {
+            const t = document.getElementById('parsingTable');
+            const validTerms = terminals.filter(x => x !== 'epsilon');
+            let html = `<thead><tr><th>Non-Terminal</th>${validTerms.map(x => `<th>${x}</th>`).join('')}</tr></thead><tbody>`;
+
+      for (const nt of nts) {
+        html += `<tr><td><strong>${nt}</strong></td>`;
+        for (const term of validTerms) {
+          const prod = table[nt] && table[nt][term] ? `${nt} -> ${table[nt][term]}` : '—';
+          html += `<td>${prod}</td>`;
+        }
+        html += `</tr>`;
+      }
+      html += `</tbody>`;
+      t.innerHTML = html;
+    }
+
+    function renderTrace(steps) {
+      const tbody = document.querySelector('#traceTable tbody');
+      tbody.innerHTML = '';
+      steps.forEach((step, idx) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${idx + 1}</td><td><code>${step.stack}</code></td><td><code>${step.input}</code></td><td>${step.action}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    function clearCanvas() {
+      const canvas = document.getElementById('treeCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function zoomCanvas(factor) {
+      currentScale *= factor;
+      if (cachedTreeData) drawParseTree(cachedTreeData, currentScale);
+    }
+
+    function resetCanvas() {
+      currentScale = 1.0;
+      if (cachedTreeData) drawParseTree(cachedTreeData, currentScale);
+    }
+
+    function drawParseTree(treeData, scale = 1.0) {
+      const canvas = document.getElementById('treeCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let leafIndex = 0;
+      function computePositions(node, depth) {
+        if (!node.children || node.children.length === 0) {
+          node.x = (90 + leafIndex * 110) * scale;
+          node.y = (70 + depth * 80) * scale;
+          leafIndex++;
+          return;
+        }
+        node.children.forEach(c => computePositions(c, depth + 1));
+        const firstX = node.children[0].x;
+        const lastX = node.children[node.children.length - 1].x;
+        node.x = (firstX + lastX) / 2;
+        node.y = (70 + depth * 80) * scale;
+      }
+
+      computePositions(treeData, 0);
+
+      function drawEdges(node) {
+        if (!node.children) return;
+        for (const child of node.children) {
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(child.x, child.y);
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = 2 * scale;
+          ctx.shadowColor = '#00f0ff';
+          ctx.shadowBlur = 8;
+          ctx.stroke();
+          drawEdges(child);
+        }
+      }
+
+      function drawNodes(node) {
+        ctx.beginPath();
+        const radius = 20 * scale;
+        ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = node.children && node.children.length > 0 ? '#b026ff' : '#00ff66';
+        ctx.shadowColor = node.children && node.children.length > 0 ? '#b026ff' : '#00ff66';
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${Math.max(10, 13 * scale)}px JetBrains Mono`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowBlur = 0;
+        ctx.fillText(node.name, node.x, node.y);
+
+        if (node.children) {
+          node.children.forEach(drawNodes);
+        }
+      }
+
+      drawEdges(treeData);
+      drawNodes(treeData);
+    }
+
+    // Auto initialize arithmetic grammar
+    document.addEventListener('DOMContentLoaded', () => {
+      applyPresetSelection();
+    });
+    </script>
+</body>
+
+</html>
